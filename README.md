@@ -2,7 +2,7 @@
   <tr>
     <td align="center" style="padding=0;width=50%;">
       <a href="https://github.com/X-rays5?tab=repositories">
-        <img align="center" src="https://github-stats-xrays5.vercel.app/api?username=X-rays5&theme=dark&hide_border=true&bg_color=00000000&show_icons=true&count_private=true&include_all_commits=true">
+        <img align="center" src="https://github-stats-xrays5.vercel.app/api?username=X-rays5&theme=dark&hide_border=true&bg_color=00000000&show_icons=true&count_private=true&include_all_commits=false">
       </a>
     </td>
     <td align="center" style="padding=0;width=50%;">

@@ -1,0 +1,53 @@
+name: Update README with Latest Activity
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Fetch latest activity
+        id: fetch_activity
+        run: |
+          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               -H "Accept: application/vnd.github.v3+json" \
+               https://api.github.com/users/X-rays5/events > events.json
+
+      - name: Process activity data
+        id: process_activity
+        run: |
+          jq '[.[] | select(.repo.name | test("^(?!GTAV_decompiled_scripts|xenforo|volkstuin|patriciasnc).*$")) | select(.public == true)] | .[:10]' events.json > filtered_events.json
+
+      - name: Update README
+        id: update_readme
+        run: |
+          latest_activity=$(jq -r '.[] | "* \(.type) in [\(.repo.name)](\(.repo.url)) on \(.created_at | strftime("%Y-%m-%d %H:%M:%S"))"' filtered_events.json)
+          sed -i '/<!-- LATEST_ACTIVITY_START -->/!b;n;c\<!-- LATEST_ACTIVITY_START -->\n'"$latest_activity"'\n<!-- LATEST_ACTIVITY_END -->' README.md
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add README.md
+          git commit -m "Update README with latest activity"
+          git push
+
+      - name: Set up notification system
+        uses: actions/notify@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          channels: email, slack
+          message: "GitHub Action failed: ${{ github.workflow }} - ${{ github.run_id }}"
+
+      - name: Implement retry logic
+        run: |
+          for i in {1..5}; do
+            curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                 -H "Accept: application/vnd.github.v3+json" \
+                 https://api.github.com/users/X-rays5/events > events.json && break || sleep $((i * 60));
+          done

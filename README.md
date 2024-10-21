@@ -12,3 +12,11 @@
     </td>
   </tr>
 </table>
+
+## Latest Activity
+
+<!-- This section will be updated by a GitHub action to display the latest activity of the GitHub account -->
+<!-- LATEST_ACTIVITY_START -->
+<!-- LATEST_ACTIVITY_END -->
+
+*Note: The date and time of the activity are displayed in the local time zone of the repository owner.*
